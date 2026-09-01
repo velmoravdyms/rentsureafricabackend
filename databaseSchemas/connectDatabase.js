@@ -69,16 +69,6 @@ function connectDatabase() {
         queueLimit: 0
     });
 
-    // Intercept all raw SQL queries globally to convert double quotes around strings into single quotes
-    const originalQuery = con.query.bind(con);
-    con.query = function (sql, values, cb) {
-        if (typeof sql === 'string') {
-            // Converts WHERE email="user@domain.com" to WHERE email='user@domain.com'
-            sql = sql.replace(/"([^"]*)"/g, "'$1'");
-        }
-        return originalQuery(sql, values, cb);
-    };
-
     return con;
 }
 
