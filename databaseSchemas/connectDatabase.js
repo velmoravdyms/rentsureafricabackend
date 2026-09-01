@@ -25,12 +25,41 @@
 
 
 
+// var mysql = require('mysql2');
+
+// function connectDatabase() {
+//     var con = mysql.createPool({
+//         host: process.env.DB_HOST || "localhost",
+//         port: process.env.DB_PORT || 3306,
+//         user: process.env.DB_USER || "root",
+//         password: process.env.DB_PASSWORD || "password",
+//         database: process.env.DB_NAME || 'easyClicksDatabase',
+//         ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : false,
+//         waitForConnections: true,
+//         connectionLimit: 10,
+//         queueLimit: 0
+//     });
+
+
+
+
+//     // Clear ANSI_QUOTES mode so MySQL treats double quotes as string values
+//     con.query("SET SESSION sql_mode = '';", (err) => {
+//         if (err) console.error("Failed to set sql_mode:", err);
+//     });
+
+//     return con;
+// }
+
+
+
+
 var mysql = require('mysql2');
 
 function connectDatabase() {
     var con = mysql.createPool({
         host: process.env.DB_HOST || "localhost",
-        port: process.env.DB_PORT || 3306,
+        port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
         user: process.env.DB_USER || "root",
         password: process.env.DB_PASSWORD || "password",
         database: process.env.DB_NAME || 'easyClicksDatabase',
@@ -40,18 +69,30 @@ function connectDatabase() {
         queueLimit: 0
     });
 
-
-
-
-    // Clear ANSI_QUOTES mode so MySQL treats double quotes as string values
-    con.query("SET SESSION sql_mode = '';", (err) => {
-        if (err) console.error("Failed to set sql_mode:", err);
-    });
+    // Intercept all raw SQL queries globally to convert double quotes around strings into single quotes
+    const originalQuery = con.query.bind(con);
+    con.query = function (sql, values, cb) {
+        if (typeof sql === 'string') {
+            // Converts WHERE email="user@domain.com" to WHERE email='user@domain.com'
+            sql = sql.replace(/"([^"]*)"/g, "'$1'");
+        }
+        return originalQuery(sql, values, cb);
+    };
 
     return con;
 }
 
 module.exports = connectDatabase;
+
+
+
+
+
+
+
+
+
+
 
 
 
