@@ -22,8 +22,8 @@ exports.verifyEmail=(req, res,next)=>{
 
 
     var userData={status:"verified"}
-    var checkuser =`SELECT * FROM users WHERE user_id="${req.params.verificationcode}";`;
-    var updateuser=`UPDATE users SET? WHERE user_id="${req.params.verificationcode}"`
+    var checkuser =`SELECT * FROM users WHERE user_id='${req.params.verificationcode}';`;
+    var updateuser=`UPDATE users SET? WHERE user_id='${req.params.verificationcode}'`
 
 
     dbconn.query(checkuser, function(err, results){
@@ -40,8 +40,8 @@ exports.verifyEmail=(req, res,next)=>{
 
 
 
-            const checkaccesstokens=`SELECT * FROM accesstokens WHERE user_id="${req.params.verificationcode}";`
-            const checkrefreshtokens=`SELECT * FROM refreshtokens WHERE user_id="${req.params.verificationcode}";`
+            const checkaccesstokens=`SELECT * FROM accesstokens WHERE user_id='${req.params.verificationcode}';`
+            const checkrefreshtokens=`SELECT * FROM refreshtokens WHERE user_id='${req.params.verificationcode}';`
             
             const accessToken={user_id:req.params.verificationcode, accesstoken:accessTokenSign}
         

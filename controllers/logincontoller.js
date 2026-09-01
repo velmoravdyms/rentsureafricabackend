@@ -21,7 +21,7 @@ exports.login_form_post=function(req,res,next){
     
 
 
-    var checkuser =`SELECT * FROM users WHERE email="${req.body.email}";`;
+    var checkuser =`SELECT * FROM users WHERE email='${req.body.email}';`;
     
     dbconn.query(checkuser, function(err, results){
         if(err){
@@ -97,8 +97,8 @@ exports.login_form_post=function(req,res,next){
                                 console.log(process.env.REFRESH_TOKEN_SECRET);
 
 
-                                const checkaccesstokens=`SELECT * FROM accesstokens WHERE user_id="${user.user_id}";`
-                                const checkrefreshtokens=`SELECT * FROM refreshtokens WHERE user_id="${user.user_id}";`
+                                const checkaccesstokens=`SELECT * FROM accesstokens WHERE user_id='${user.user_id}';`
+                                const checkrefreshtokens=`SELECT * FROM refreshtokens WHERE user_id='${user.user_id}';`
 
                                 const accesstokenid=uuidv4();
                                 const refreshtokenid=uuidv4();
@@ -118,7 +118,7 @@ exports.login_form_post=function(req,res,next){
                                     }
                                     else{
                                         if(results.length>0){
-                                            dbconn.query(`DELETE FROM accesstokens WHERE user_id="${user.user_id}"`, (err,results,fields)=>{
+                                            dbconn.query(`DELETE FROM accesstokens WHERE user_id='${user.user_id}'`, (err,results,fields)=>{
                                                 if(err){
                                                     console.log(err)
                                                 }
@@ -160,7 +160,7 @@ exports.login_form_post=function(req,res,next){
                                     }
                                     else{
                                         if(results.length>0){
-                                            dbconn.query(`DELETE FROM refreshtokens WHERE user_id="${user.user_id}"`, (err,results,fields)=>{                                      
+                                            dbconn.query(`DELETE FROM refreshtokens WHERE user_id='${user.user_id}'`, (err,results,fields)=>{                                      
                                                 if(err){
                                                     console.log(err)
                                                 }

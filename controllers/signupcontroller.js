@@ -69,7 +69,7 @@ exports.signup_form_post= function(req,res, next){
 
     var userData={user_id:uniqueID, email:req.body.email, role:JSON.stringify({roles:[`${req.body.role}`]}), password:hashedPassword, status:"pending"}
         
-        var checkuser =`SELECT * FROM users WHERE email="${req.body.email}";`;
+        var checkuser =`SELECT * FROM users WHERE email='${req.body.email}';`;
         
         dbconn.query(checkuser, function(err, results){
             if(err){
