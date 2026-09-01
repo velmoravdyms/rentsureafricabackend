@@ -40,6 +40,14 @@ function connectDatabase() {
         queueLimit: 0
     });
 
+
+
+
+    // Clear ANSI_QUOTES mode so MySQL treats double quotes as string values
+    con.query("SET SESSION sql_mode = '';", (err) => {
+        if (err) console.error("Failed to set sql_mode:", err);
+    });
+
     return con;
 }
 
