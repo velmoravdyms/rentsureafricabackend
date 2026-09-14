@@ -428,10 +428,9 @@ app.post("/callback", (req, res) => {
  
 
  const upload = multer({ dest: "uploads/" }); // Temp folder
+ const BUNNY_STORAGE_URL = "https://storage.bunnycdn.com/rentsureafricaimages-storage/";
+ const BUNNY_ACCESS_KEY = "e82ef1ca-9a92-4cb2-bf148d33df4c-2d2c-4d0d";
  
- const BUNNY_STORAGE_URL = "https://storage.bunnycdn.com/easyclicksimages-storage/";
- const BUNNY_ACCESS_KEY = "d3ff2e39-bb6b-4686-aac7a14a2cf7-3295-4852";
-  
  
  
  app.post("/upload", upload.array("images", 20), async (req, res) => {
@@ -483,7 +482,10 @@ app.post("/callback", (req, res) => {
               }
           );
 
-          uploadedImages.push(`https://Europe(Falkenstein).b-cdn.net/${fileName}`); // CDN URL speichern
+          uploadedImages.push(`https://rentsureafrica-pullzone.b-cdn.net//${fileName}`); // CDN URL speichern
+
+
+          
           
       } catch (error) {
           console.error(`Fehler beim Hochladen von ${fileName}:`, error.response?.data || error.message);
