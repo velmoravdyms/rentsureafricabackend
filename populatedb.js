@@ -667,6 +667,31 @@ function populatedb (){
             )`;
 
 
+            // var createpropertiestable=`CREATE TABLE IF NOT EXISTS properties(
+            //     property_id VARCHAR(255) PRIMARY KEY,
+            //     user_id VARCHAR(255), 
+            //     property_name VARCHAR(255), 
+            //     total_units INT(255),
+            //     available_units INT(255),
+            //     property_type VARCHAR(255),
+            //     listing_purpose VARCHAR(255), 
+            //     internal_features_per_unit JSON,
+            //     apartment_external_features JSON,
+            //     apartment_features_nearby JSON,
+            //     apartment_rooms_per_unit JSON,
+            //     prices_per_unit JSON,
+                
+            //     landlord_id VARCHAR(255),
+            //     caretaker_id VARCHAR(255),
+            //     service_provider_id VARCHAR(255),
+              
+            //     FOREIGN KEY(user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+            //     FOREIGN KEY(landlord_id) REFERENCES landlords(landlord_id) ON UPDATE CASCADE ON DELETE CASCADE,
+            //     FOREIGN KEY(caretaker_id) REFERENCES caretakers(caretaker_id) ON UPDATE CASCADE ON DELETE CASCADE,
+            //     FOREIGN KEY(service_provider_id) REFERENCES serviceproviders(service_provider_id) ON UPDATE CASCADE ON DELETE CASCADE
+    
+            // )`;
+
             var createpropertiestable=`CREATE TABLE IF NOT EXISTS properties(
                 property_id VARCHAR(255) PRIMARY KEY,
                 user_id VARCHAR(255), 
@@ -680,16 +705,21 @@ function populatedb (){
                 apartment_features_nearby JSON,
                 apartment_rooms_per_unit JSON,
                 prices_per_unit JSON,
+
+                property_latitude DECIMAL(10,7),
+                property_longitude DECIMAL(10,7),
+                property_address VARCHAR(500) NULL,
+                property_place_id VARCHAR(255) NULL,
                 
                 landlord_id VARCHAR(255),
                 caretaker_id VARCHAR(255),
                 service_provider_id VARCHAR(255),
-              
+            
                 FOREIGN KEY(user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
                 FOREIGN KEY(landlord_id) REFERENCES landlords(landlord_id) ON UPDATE CASCADE ON DELETE CASCADE,
                 FOREIGN KEY(caretaker_id) REFERENCES caretakers(caretaker_id) ON UPDATE CASCADE ON DELETE CASCADE,
                 FOREIGN KEY(service_provider_id) REFERENCES serviceproviders(service_provider_id) ON UPDATE CASCADE ON DELETE CASCADE
-    
+
             )`;
                 
             

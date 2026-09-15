@@ -31,7 +31,7 @@ require("@babel/register")({
   // app.use(cors({
   //   corsOptions={
 
-  //   }
+  //   }data
   // }))
 
   
@@ -482,7 +482,7 @@ app.post("/callback", (req, res) => {
               }
           );
 
-          uploadedImages.push(`https://rentsureafrica-pullzone.b-cdn.net//${fileName}`); // CDN URL speichern
+          uploadedImages.push(`https://rentsureafrica-pullzone.b-cdn.net/ /${fileName}`); // CDN URL speichern
 
 
           

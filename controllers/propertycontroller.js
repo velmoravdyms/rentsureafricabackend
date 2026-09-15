@@ -858,9 +858,13 @@ export async function listpropertyfeatures(req,res,next){
 
     const pricesperunit=JSON.stringify( req.body.propertypriceperunit  );
 
+    const propertylocation = req.body.propertylocation;
+
 
     var propertydetails={property_type:req.body.propertytype, listing_purpose:req.body.propertylistingpurpose,internal_features_per_unit:internalfeatures,
-        apartment_external_features:externalfeatures,apartment_features_nearby:nearbyfeatures,apartment_rooms_per_unit:roomsperunit,prices_per_unit:pricesperunit
+        apartment_external_features:externalfeatures,apartment_features_nearby:nearbyfeatures,apartment_rooms_per_unit:roomsperunit,prices_per_unit:pricesperunit,
+        property_latitude: propertylocation?.latitude,property_longitude: propertylocation?.longitude,property_address: propertylocation?.formattedAddress,
+        property_place_id: propertylocation?.placeId
     }
 
 
