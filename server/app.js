@@ -336,14 +336,28 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// CORS configuration
-const corsOptions = {
-  origin: process.env.CLIENT_URL || "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Authorization", "Content-Type"],
-  credentials: true,
-};
-app.use(cors(corsOptions));
+
+
+  corsOptions=cors({
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+    "Access-Control-Allow-": "Authorization, Content-Type",
+    "Access-Control-Allow-Credentials": "true"
+  });
+
+  app.use(corsOptions);
+
+
+
+// // CORS configuration
+// const corsOptions = {
+//   origin: process.env.CLIENT_URL || "*",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   allowedHeaders: ["Authorization", "Content-Type"],
+//   credentials: true,
+// };
+// app.use(cors(corsOptions));
 
 // 2. Database Initialization
 const populatedDatabase = require("../populatedb");
