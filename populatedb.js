@@ -536,8 +536,8 @@ function populatedb (){
 
 
     con.connect(function(err) {
+      console.log(err.message)
       if (err) throw err;
-    //   console.log(err.message)
      
       async function createSqlTables(){
 
