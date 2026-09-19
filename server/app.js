@@ -338,15 +338,15 @@ app.use(express.urlencoded({ extended: false }));
 
 
 
-  corsOptions=cors({
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-    "Access-Control-Allow-": "Authorization, Content-Type",
-    "Access-Control-Allow-Credentials": "true"
-  });
+corsOptions=cors({
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+  "Access-Control-Allow-": "Authorization, Content-Type",
+  "Access-Control-Allow-Credentials": "true"
+});
 
-  app.use(corsOptions);
+app.use(corsOptions);
 
 
 
@@ -361,7 +361,16 @@ app.use(express.urlencoded({ extended: false }));
 
 // 2. Database Initialization
 const populatedDatabase = require("../populatedb");
-populatedDatabase();
+
+try{
+  console.log("Trying to connect to Database Aiven...");
+  populatedDatabase();
+}
+catch(error){
+
+  console.log("Error connecting to database", error);
+}
+
 
 // 3. View Engine & Static Assets
 app.set("views", path.join(__dirname, "views"));
