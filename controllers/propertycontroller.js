@@ -885,3 +885,136 @@ export async function listpropertyfeatures(req,res,next){
 
 
 }
+
+
+
+
+
+
+
+    // import mysql from "mysql2";
+    // import dbConnection from "../databaseSchemas/connectDatabase";
+    // import jwt from "jsonwebtoken";
+
+    // /**
+    //  * Helper to extract and verify Bearer Token from Authorization Header
+    //  */
+
+
+
+
+
+
+    // async function getHeaders(){
+    //     try{
+    //         const authHeader=req.headers.authorization;
+    //         if (authHeader && authHeader.startsWith('Bearer ')) {
+    //             const token = authHeader.split(' ')[1];
+    //             req.token = token.accesstoken; // Attach the token to the request object
+    //             req.user_id=token.user_id;
+                
+    //             console.log(token);
+
+    //             const decodedToken=verify(token, process.env.ACCESS_TOKEN_SECRET);
+        
+    //             console.log("here is the dECODED token ")
+    //             console.log(decodedToken);
+
+
+    //             return decodedToken;
+    //         } else {
+    //             req.token = null;
+        
+    //             console.log("There is no accesstoken the token ")
+    //             console.log(token);
+    //         }
+        
+    //     }
+    //     catch(err){
+    //         console.log(err);
+    //     }
+    // }  
+
+
+
+
+const getDecodedUser = (req) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    }
+    return null;
+  } catch (err) {
+    console.error("JWT Verification Error:", err.message);
+    return null;
+  }
+};
+
+/**
+ * Fetch all properties managed by the agency / user
+ * Route: GET /
+ */
+export function all_properties(req, res, next) {
+  const dbconn = dbConnection();
+  const decodedToken = getDecodedUser(req);
+  
+  let query = "SELECT * FROM properties";
+  let queryParams = [];
+
+  // Filter properties by user_id if token is present
+  if (decodedToken && decodedToken.user_id) {
+    query += " WHERE user_id = ?";
+    queryParams.push(decodedToken.user_id);
+  }
+
+  dbconn.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error("Error fetching properties:", err);
+      return res.status(500).json({ success: false, message: "Database query error while fetching properties." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: results.length,
+      data: results
+    });
+  });
+}
+
+/**
+ * Fetch specific property details
+ * Route: GET /apartment?propertyid=XYZ
+ */
+export function property_details(req, res, next) {
+  const dbconn = dbConnection();
+  const propertyId = req.query.propertyid || req.query.id || req.params.propertyid;
+
+  if (!propertyId) {
+    return res.status(400).json({ success: false, message: "Property ID is required." });
+  }
+
+  const query = "SELECT * FROM properties WHERE property_id = ? LIMIT 1";
+
+  dbconn.query(query, [propertyId], (err, results) => {
+    if (err) {
+      console.error("Error fetching property details:", err);
+      return res.status(500).json({ success: false, message: "Failed to fetch property details." });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: "Property not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: results[0]
+    });
+  });
+}
+
+
+
+
+
