@@ -502,28 +502,60 @@ function populatedb (){
     console.log(uniqueid())
 
 
+    
+    
+    
+    // const mysql = require('mysql2');
 
-    const mysql = require('mysql2'); // or 'mysql'
+    // const con= mysql.createConnection({
+    // host: process.env.DB_HOST,
+    // port: process.env.DB_PORT || 28678,
+    // user: process.env.DB_USER,
+    // password: process.env.DB_PASSWORD,
+    // database: process.env.DB_NAME || 'defaultdb',
+    // ssl: {
+    //     rejectUnauthorized: false // Required for Aiven cloud SSL connections
+    // }
+    // });
+
+    // con.connect((err) => {
+    // if (err) {
+    //     console.error('Database connection failed:', err);
+    //     return;
+    // }
+    // console.log('Connected to Aiven MySQL successfully!');
+    // });
+
+
+    const mysql = require('mysql2');
+
 
     console.log(  
-        `host:${ process.env.DB_HOST},
-    port:${ process.env.DB_PORT},
-    user: ${process.env.DB_USER},
-    password: ${process.env.DB_PASSWORD},
-    database: ${process.env.DB_NAME},
-    ssl: {
-        rejectUnauthorized: false} // Required for Aiven cloud SSL connections
-    }
+       `host:${ process.env.DB_HOST},
+        port:${ process.env.DB_PORT},
+        port: ${parseInt(process.env.DB_PORT)},
+        user: ${process.env.DB_USER},
+        password: ${process.env.DB_PASSWORD},
+        database: ${process.env.DB_NAME},
+        ssl: {
+            rejectUnauthorized: false} // Required for Aiven cloud SSL connections
+        }
     })`)
 
-    const con= mysql.createConnection({
+
+
+
+
+    const con = mysql.createConnection({
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 28678,
+    port: parseInt(process.env.DB_PORT),
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME || 'defaultdb',
+    database: process.env.DB_NAME,
+    family: 4,                // Forces IPv4 lookup to bypass cloud container IPv6 routing timeouts
+    connectTimeout: 120000,    // Increases timeout window to 20 seconds
     ssl: {
-        rejectUnauthorized: false // Required for Aiven cloud SSL connections
+        rejectUnauthorized: false
     }
     });
 
@@ -534,6 +566,27 @@ function populatedb (){
     }
     console.log('Connected to Aiven MySQL successfully!');
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 
