@@ -501,75 +501,39 @@ function populatedb (){
 
     console.log(uniqueid())
 
-    // var mysql = require('mysql2');
-
-    // var con = mysql.createConnection({
-    //     host: process.env.DB_HOST || "localhost",
-    //     port: process.env.DB_PORT || 3306,
-    //     user: process.env.DB_USER || "root",
-    //     password: process.env.DB_PASSWORD || "password",
-    //     database: process.env.DB_NAME || 'easyClicksDatabase',
-    //     ssl: { rejectUnauthorized: false }, // Always enforce SSL for cloud-hosted MySQL
-    //     waitForConnections: true,
-    //     connectionLimit: 10,
-    //     queueLimit: 0
-    // });
 
 
+    const mysql = require('mysql2'); // or 'mysql'
 
+    console.log(  
+        `host:${ process.env.DB_HOST},
+    port:${ process.env.DB_PORT},
+    user: ${process.env.DB_USER},
+    password: ${process.env.DB_PASSWORD},
+    database: ${process.env.DB_NAME},
+    ssl: {
+        rejectUnauthorized: false} // Required for Aiven cloud SSL connections
+    }
+    })`)
 
+    const con= mysql.createConnection({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 28678,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'defaultdb',
+    ssl: {
+        rejectUnauthorized: false // Required for Aiven cloud SSL connections
+    }
+    });
 
-
-
-const mysql = require('mysql2'); // or 'mysql'
-
-console.log(  
-    `host:${ process.env.DB_HOST},
-  port:${ process.env.DB_PORT},
-  user: ${process.env.DB_USER},
-  password: ${process.env.DB_PASSWORD},
-  database: ${process.env.DB_NAME},
-  ssl: {
-    rejectUnauthorized: false} // Required for Aiven cloud SSL connections
- }
-})`)
-
-const con= mysql.createConnection({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 28678,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || 'defaultdb',
-  ssl: {
-    rejectUnauthorized: false // Required for Aiven cloud SSL connections
-  }
-});
-
-con.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    return;
-  }
-  console.log('Connected to Aiven MySQL successfully!');
-});
-
-
-
-
-
-
-r
-
-
-
-
-
-
-
-
-
-
-
+    con.connect((err) => {
+    if (err) {
+        console.error('Database connection failed:', err);
+        return;
+    }
+    console.log('Connected to Aiven MySQL successfully!');
+    });
 
 
 
@@ -579,7 +543,7 @@ r
 
 
     con.connect(function(err) {
-      console.log(err)
+      console.log("table creation con error for db connection",err)
       if (err) throw err;
      
       async function createSqlTables(){
