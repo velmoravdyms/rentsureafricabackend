@@ -215,11 +215,75 @@ export function createLandlord(req,res,next){
                                                 })
                                             }
                                             else{
+                                                // if (checklandlordperpropertyresults.length > 0) {
+                                                //     return res.status(409).send({
+                                                //         message: "This property already has a landlord assigned."
+                                                //     });
+                                                // }
+
                                                 if (checklandlordperpropertyresults.length > 0) {
-                                                    return res.status(409).send({
-                                                        message: "This property already has a landlord assigned."
-                                                    });
+                                                    const existingLandlordId = checklandlordperpropertyresults[0].landlord_id;
+
+                                                    const landlordUpdate = {
+                                                        first_name: req.body.landlordname,
+                                                        email: req.body.landlordemail,
+                                                        phonenumber: req.body.landlordphonenumber
+                                                    };
+
+                                                    dbconn.query(
+                                                        `UPDATE landlords SET ? WHERE landlord_id = ?`,
+                                                        [landlordUpdate, existingLandlordId],
+                                                        (err) => {
+                                                            if (err) {
+                                                                console.log(err);
+                                                                return res.status(500).send({
+                                                                    message: "Failed to update landlord"
+                                                                });
+                                                            }
+
+                                                            // continue wizard successfully
+                                                            return res.status(200).send({
+                                                                message: "Landlord updated successfully",
+                                                                landlordid: existingLandlordId
+                                                            });
+                                                        }
+                                                    );
+
+                                                    return;
                                                 }
+
+                                                // No landlord on this property yet → create one
+                                                dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return res.status(500).send({
+                                                            message: "Failed to create landlord"
+                                                        });
+                                                    }
+
+                                                    dbconn.query(
+                                                        `UPDATE properties SET ? WHERE property_id = ?`,
+                                                        [propertyData, property_id],
+                                                        (err) => {
+                                                            if (err) {
+                                                                console.log(err);
+                                                                return res.status(500).send({
+                                                                    message: "Failed to link landlord to property"
+                                                                });
+                                                            }
+
+                                                            return res.status(201).send({
+                                                                message: "New Landlord Created Successfully"
+                                                            });
+                                                        }
+                                                    );
+                                                });
+
+
+
+
+
+
 
                                                 dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
                                                     if (err) {
@@ -319,11 +383,68 @@ export function createLandlord(req,res,next){
                                 }
                                 else{
 
+                                    // if (checklandlordperpropertyresults.length > 0) {
+                                    //     return res.status(409).send({
+                                    //         message: "This property already has a landlord assigned."
+                                    //     });
+                                    // }
                                     if (checklandlordperpropertyresults.length > 0) {
-                                        return res.status(409).send({
-                                            message: "This property already has a landlord assigned."
-                                        });
+                                        const existingLandlordId = checklandlordperpropertyresults[0].landlord_id;
+
+                                        const landlordUpdate = {
+                                            first_name: req.body.landlordname,
+                                            email: req.body.landlordemail,
+                                            phonenumber: req.body.landlordphonenumber
+                                        };
+
+                                        dbconn.query(
+                                            `UPDATE landlords SET ? WHERE landlord_id = ?`,
+                                            [landlordUpdate, existingLandlordId],
+                                            (err) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return res.status(500).send({
+                                                        message: "Failed to update landlord"
+                                                    });
+                                                }
+
+                                                // continue wizard successfully
+                                                return res.status(200).send({
+                                                    message: "Landlord updated successfully",
+                                                    landlordid: existingLandlordId
+                                                });
+                                            }
+                                        );
+
+                                        return;
                                     }
+
+                                    // No landlord on this property yet → create one
+                                    dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
+                                        if (err) {
+                                            console.log(err);
+                                            return res.status(500).send({
+                                                message: "Failed to create landlord"
+                                            });
+                                        }
+
+                                        dbconn.query(
+                                            `UPDATE properties SET ? WHERE property_id = ?`,
+                                            [propertyData, property_id],
+                                            (err) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return res.status(500).send({
+                                                        message: "Failed to link landlord to property"
+                                                    });
+                                                }
+
+                                                return res.status(201).send({
+                                                    message: "New Landlord Created Successfully"
+                                                });
+                                            }
+                                        );
+                                    });                                    
 
                                     dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
                                         if (err) {
@@ -473,11 +594,68 @@ export function createLandlord(req,res,next){
                                     }
                                     else{
                                             
+                                        // if (checklandlordperpropertyresults.length > 0) {
+                                        //     return res.status(409).send({
+                                        //         message: "This property already has a landlord assigned."
+                                        //     });
+                                        // }
                                         if (checklandlordperpropertyresults.length > 0) {
-                                            return res.status(409).send({
-                                                message: "This property already has a landlord assigned."
-                                            });
+                                            const existingLandlordId = checklandlordperpropertyresults[0].landlord_id;
+
+                                            const landlordUpdate = {
+                                                first_name: req.body.landlordname,
+                                                email: req.body.landlordemail,
+                                                phonenumber: req.body.landlordphonenumber
+                                            };
+
+                                            dbconn.query(
+                                                `UPDATE landlords SET ? WHERE landlord_id = ?`,
+                                                [landlordUpdate, existingLandlordId],
+                                                (err) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return res.status(500).send({
+                                                            message: "Failed to update landlord"
+                                                        });
+                                                    }
+
+                                                    // continue wizard successfully
+                                                    return res.status(200).send({
+                                                        message: "Landlord updated successfully",
+                                                        landlordid: existingLandlordId
+                                                    });
+                                                }
+                                            );
+
+                                            return;
                                         }
+
+                                        // No landlord on this property yet → create one
+                                        dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return res.status(500).send({
+                                                    message: "Failed to create landlord"
+                                                });
+                                            }
+
+                                            dbconn.query(
+                                                `UPDATE properties SET ? WHERE property_id = ?`,
+                                                [propertyData, property_id],
+                                                (err) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        return res.status(500).send({
+                                                            message: "Failed to link landlord to property"
+                                                        });
+                                                    }
+
+                                                    return res.status(201).send({
+                                                        message: "New Landlord Created Successfully"
+                                                    });
+                                                }
+                                            );
+                                        });                                            
 
                                         dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
                                             if (err) {
@@ -562,11 +740,68 @@ export function createLandlord(req,res,next){
                             else{
                         
                                                                     
+                                // if (checklandlordperpropertyresults.length > 0) {
+                                //     return res.status(409).send({
+                                //         message: "This property already has a landlord assigned."
+                                //     });
+                                // }
                                 if (checklandlordperpropertyresults.length > 0) {
-                                    return res.status(409).send({
-                                        message: "This property already has a landlord assigned."
-                                    });
+                                    const existingLandlordId = checklandlordperpropertyresults[0].landlord_id;
+
+                                    const landlordUpdate = {
+                                        first_name: req.body.landlordname,
+                                        email: req.body.landlordemail,
+                                        phonenumber: req.body.landlordphonenumber
+                                    };
+
+                                    dbconn.query(
+                                        `UPDATE landlords SET ? WHERE landlord_id = ?`,
+                                        [landlordUpdate, existingLandlordId],
+                                        (err) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return res.status(500).send({
+                                                    message: "Failed to update landlord"
+                                                });
+                                            }
+
+                                            // continue wizard successfully
+                                            return res.status(200).send({
+                                                message: "Landlord updated successfully",
+                                                landlordid: existingLandlordId
+                                            });
+                                        }
+                                    );
+
+                                    return;
                                 }
+
+                                // No landlord on this property yet → create one
+                                dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
+                                    if (err) {
+                                        console.log(err);
+                                        return res.status(500).send({
+                                            message: "Failed to create landlord"
+                                        });
+                                    }
+
+                                    dbconn.query(
+                                        `UPDATE properties SET ? WHERE property_id = ?`,
+                                        [propertyData, property_id],
+                                        (err) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return res.status(500).send({
+                                                    message: "Failed to link landlord to property"
+                                                });
+                                            }
+
+                                            return res.status(201).send({
+                                                message: "New Landlord Created Successfully"
+                                            });
+                                        }
+                                    );
+                                });                                         
 
                                 dbconn.query(`INSERT INTO landlords SET ?`, landlordData, (err, results) => {
                                     if (err) {
