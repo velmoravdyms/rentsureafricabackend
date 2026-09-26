@@ -361,7 +361,9 @@ app.use(corsOptions);
 
 // 2. Database Initialization
 const populatedDatabase = require("../populatedb");
-
+// import dbConnection from "./databaseSchemas/connectDatabase.js";
+const dbConnection = require("../databaseSchemas/connectDatabase");
+const { v4: uuidv4 } = require("uuid"); // ✅
 try{
   console.log("Trying to connect to Database Aiven...");
   populatedDatabase();
@@ -408,43 +410,123 @@ const { initiateStkPush, handleMpesaCallback } = require("../controllers/payment
 app.post("/api/payments/stk-push", auth, initiateStkPush);
 app.post("/api/payments/callback", handleMpesaCallback);
 
-// 8. Bunny.net Image Upload Handler
-const upload = multer({ dest: "uploads/" });
-const BUNNY_STORAGE_URL = process.env.BUNNY_STORAGE_URL || "https://storage.bunnycdn.com/rentsureafricaimages-storage/";
-const BUNNY_ACCESS_KEY = process.env.BUNNY_ACCESS_KEY;
+  // 8. Bunny.net Image Upload Handler
+  const upload = multer({ dest: "uploads/" });
+  const BUNNY_STORAGE_URL = process.env.BUNNY_STORAGE_URL || "https://storage.bunnycdn.com/rentsureafricaimages-storage/";
+  const BUNNY_ACCESS_KEY = process.env.BUNNY_ACCESS_KEY || "e82ef1ca-9a92-4cb2-bf148d33df4c-2d2c-4d0d";
 
-app.post("/upload", auth, upload.array("images", 20), async (req, res) => {
-  try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ success: false, message: "No files uploaded" });
-    }
-
-    let uploadedImages = [];
-    for (let file of req.files) {
-      const filePath = file.path;
-      const fileName = `${Date.now()}_${file.originalname.replace(/\s+/g, "_")}`;
-      const fileData = fs.readFileSync(filePath);
-
-      try {
-        await axios.put(`${BUNNY_STORAGE_URL}${fileName}`, fileData, {
-          headers: {
-            AccessKey: BUNNY_ACCESS_KEY,
-            "Content-Type": "application/octet-stream",
-          },
-        });
-        uploadedImages.push(`https://rentsureafrica-pullzone.b-cdn.net/${fileName}`);
-      } catch (err) {
-        console.error(`Upload failed for ${fileName}:`, err.message);
-      } finally {
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  app.post("/upload", auth, upload.array("images", 20), async (req, res) => {
+    try {
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ success: false, message: "No files uploaded" });
       }
+
+
+
+      const dbconn = dbConnection();
+      const propertyId = req.body.propertyId;
+      const category = req.body.category;
+
+      if (!propertyId || !category) {
+        return res.status(400).json({
+          success: false,
+          message: "propertyId and category are required"
+        });
+      }
+
+      let uploadedImages = [];
+
+      console.log("propertyId:", propertyId);
+      console.log("category:", category);
+      console.log("files:", req.files.length);
+
+
+      for (const file of req.files) {
+          try {
+            const imageId = uuidv4();
+
+            const fileName = `${Date.now()}_${file.originalname.replace(/\s+/g, "_")}`;
+            const bunnyPath = `${propertyId}/${category}/${fileName}`;
+
+            console.log("Uploading to Bunny:", bunnyPath);
+
+            const fileData = fs.readFileSync(file.path);
+
+            await axios.put(`${BUNNY_STORAGE_URL}${bunnyPath}`, fileData, {
+              headers: {
+                AccessKey: BUNNY_ACCESS_KEY,
+                "Content-Type": "application/octet-stream",
+              },
+            });
+
+            console.log("Bunny upload successful");
+
+            const imageUrl = `https://rentsureafrica-pullzone.b-cdn.net/${bunnyPath}`;
+
+            await new Promise((resolve, reject) => {
+              dbconn.query(
+                `INSERT INTO apartmentimages SET ?`,
+                {
+                  image_id: imageId,
+                  property_id: propertyId,
+                  image_view: category,
+                  image_status: "active",
+                  image_path: imageUrl,
+                },
+                (err) => (err ? reject(err) : resolve())
+              );
+            });
+
+            console.log("Database insert successful");
+
+            uploadedImages.push(imageUrl);
+
+            fs.unlinkSync(file.path);
+
+          } catch (err) {
+            console.error("UPLOAD LOOP ERROR:");
+            console.error(err);
+            throw err;
+          }
     }
 
-    res.json({ message: "Successfully uploaded photos", success: true, urls: uploadedImages });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
+      res.json({ message: "Successfully uploaded photos", success: true, urls: uploadedImages });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // 9. Protected Multi-Role Routes
   app.use("/agency", auth, authorize(["agency"]), agencyRouter);

@@ -136,4 +136,8 @@ router.get("/", propertyController.all_properties);
 // Fetch specific property details
 router.get("/apartment", propertyController.property_details);
 
+
+// Step 8 - Load property images
+router.get("/list-property/images/:propertyid",propertyController.getPropertyImages);
+
 module.exports = router;
